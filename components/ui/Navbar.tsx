@@ -2,10 +2,16 @@ import NextLink from 'next/link';
 import { AppBar, Badge, Box, Button, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import ShoppingCartOutlined  from '@mui/icons-material/ShoppingCartOutlined';
 import SearchOutlined from '@mui/icons-material/SearchOutlined';
+import { useRouter } from 'next/router';
 
 
 
 export const Navbar = () => {
+
+  const router = useRouter();
+
+  const activeLink = (href: string) => href === router.asPath ? 'primary': 'info';
+
   return (
     <AppBar>
       <Toolbar>
@@ -21,17 +27,17 @@ export const Navbar = () => {
 
           <NextLink href='/category/men' passHref>
             <Link>
-              <Button>Hombres</Button>
+              <Button color={activeLink('/category/men')}>Hombres</Button>
             </Link>
           </NextLink>
-          <NextLink href='/category/woman' passHref>
+          <NextLink href='/category/women' passHref>
             <Link>
-              <Button>Mujeres</Button>
+              <Button color={activeLink('/category/women')}>Mujeres</Button>
             </Link>
           </NextLink>
           <NextLink href='/category/kid' passHref>
             <Link>
-              <Button>Niños</Button>
+              <Button color={activeLink('/category/kid')}>Niños</Button>
             </Link>
           </NextLink>
         </Box>
