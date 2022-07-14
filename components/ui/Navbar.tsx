@@ -3,12 +3,16 @@ import { AppBar, Badge, Box, Button, IconButton, Link, Toolbar, Typography } fro
 import ShoppingCartOutlined  from '@mui/icons-material/ShoppingCartOutlined';
 import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { UIContext } from '../../context';
 
 
 
 export const Navbar = () => {
 
   const router = useRouter();
+
+  const { toogleSideMenu } = useContext(UIContext);
 
   const activeLink = (href: string) => href === router.asPath ? 'primary': 'info';
 
@@ -56,7 +60,7 @@ export const Navbar = () => {
           </Link>
         </NextLink>
 
-        <Button>
+        <Button onClick={toogleSideMenu}>
           Menu
         </Button>
       </Toolbar>
