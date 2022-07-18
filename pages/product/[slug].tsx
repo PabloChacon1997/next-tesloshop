@@ -1,5 +1,5 @@
 import { Button, Box,Chip, Grid, Typography } from "@mui/material";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from "next";
 
 import { ShopLayout } from "../../components/layouts"
 import { ProductSlideshow, SizeSelector } from "../../components/products";
@@ -68,8 +68,22 @@ const ProductPage: NextPage<Props> = ({ product }) => {
  * revalidar cada 24h
  */
 
-export const getServerSideProps: GetServerSideProps = async ({query}) => {
-  const product = await dbProducts.getProductsBySlug(`${query.slug}`);
+
+export const getStaticPaths: GetStaticPaths = async (ctx) => {
+  const productSlugs = await dbProducts.getAllProductsSlugs();
+  return {
+    paths: productSlugs.map( ({slug}) => ({
+      params: {
+        slug
+      }
+    })),
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug='' } = params as {slug: string};
+  const product = await dbProducts.getProductsBySlug(slug);
 
   if (!product) {
     return {
@@ -83,8 +97,29 @@ export const getServerSideProps: GetServerSideProps = async ({query}) => {
   return {
     props: {
       product
-    }
+    },
+    revalidate: 60 * 60 *24
   }
 }
+
+
+// export const getServerSideProps: GetServerSideProps = async ({query}) => {
+//   const product = await dbProducts.getProductsBySlug(`${query.slug}`);
+
+//   if (!product) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false
+//       }
+//     }
+//   }
+
+//   return {
+//     props: {
+//       product
+//     }
+//   }
+// }
 
 export default ProductPage
