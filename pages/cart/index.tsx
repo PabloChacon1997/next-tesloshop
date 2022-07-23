@@ -6,6 +6,8 @@ import { ShopLayout } from '../../components/layouts';
 
 
 const CartPage = () => {
+
+
   return (
     <ShopLayout title={'Carrito - 3'} pageDescription={'Carrito de compras de la tienda'}>
       <Typography variant='h1' component='h1'>Carrito</Typography>
