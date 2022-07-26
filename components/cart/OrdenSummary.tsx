@@ -1,6 +1,9 @@
 import { useContext } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { CartContext } from '../../context/cart';
+
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+
+import { CartContext } from '../../context';
 import { currency } from '../../utils';
 
 export const OrdenSummary = () => {

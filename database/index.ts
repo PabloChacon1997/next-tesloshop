@@ -7,4 +7,4 @@ export * from './constants';
 
 
 // Base de datos de prueba
-export * as seedDatabse from './products'
+export * as seedDatabse from './seed-data'

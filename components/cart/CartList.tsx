@@ -1,10 +1,17 @@
-import { FC, useState } from 'react';
+import { FC, useContext } from 'react';
 
 import NextLink from 'next/link';
-import { Typography, Grid, Link, CardActionArea, CardMedia, Box, Button } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardMedia from '@mui/material/CardMedia';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+
+
 import { ItemCounter } from '../ui';
 import { ICartProduct } from '../../interfaces';
-import { useContext } from 'react';
 import { CartContext } from '../../context';
 
 
