@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next'
 import { ShopLayout } from '../components/layouts';
 import { ProductList } from '../components/products';
