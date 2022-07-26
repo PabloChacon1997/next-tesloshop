@@ -1,4 +1,12 @@
-import { Card, CardContent, Divider, Grid, Typography, Box, Button } from '@mui/material';
+
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+
 import { CartList, OrdenSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 

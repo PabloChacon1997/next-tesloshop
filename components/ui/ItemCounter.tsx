@@ -1,7 +1,11 @@
-import AddCircleOutline from "@mui/icons-material/AddCircleOutline"
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline"
-import { Box, IconButton, Typography } from "@mui/material"
-import { FC, useState } from 'react';
+import { FC } from 'react';
+
+import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+
+import IconButton from "@mui/material/IconButton";
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 interface Props{
   currentValue: number;

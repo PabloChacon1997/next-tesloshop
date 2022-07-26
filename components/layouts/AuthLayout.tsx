@@ -1,6 +1,7 @@
 import { FC, PropsWithChildren } from 'react';
 
-import { Box } from "@mui/material";
+import Box  from "@mui/material/Box";
+
 import Head from "next/head"
 
 

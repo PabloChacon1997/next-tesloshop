@@ -1,4 +1,9 @@
-import { Chip, Grid, Link, Typography } from "@mui/material"
+
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+
 import NextLink from 'next/link';
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid"
 import { ShopLayout } from "../../components/layouts"

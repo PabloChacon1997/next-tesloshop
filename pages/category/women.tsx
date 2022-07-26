@@ -1,5 +1,7 @@
 import { ShopLayout } from "../../components/layouts"
-import { Typography } from '@mui/material';
+
+import Typography from '@mui/material/Typography';
+
 import { useProducts } from "../../hooks";
 import { FullScreenLoading } from "../../components/ui";
 import { ProductList } from '../../components/products';

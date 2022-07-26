@@ -1,5 +1,7 @@
-import { FC } from "react"
-import { Grid } from '@mui/material';
+import { FC } from "react";
+
+import Grid  from '@mui/material/Grid';
+
 import { IProduct } from "../../interfaces";
 import { ProductCard } from "./ProductCard";
 

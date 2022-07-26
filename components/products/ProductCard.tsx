@@ -1,5 +1,15 @@
 import { FC, useMemo, useState } from 'react';
-import { Grid, Card, CardActionArea, CardMedia, Box, Typography, Link, Chip } from '@mui/material';
+
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardMedia from '@mui/material/CardMedia';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
+
+
 import NextLink from 'next/link';
 import { IProduct } from '../../interfaces';
 
