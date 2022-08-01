@@ -24,6 +24,7 @@ import { CartState } from './';
       case '[Cart]-Load Cart from cookies | storage':
         return {
           ...state,
+          isLoaded: true,
           cart: [...action.payload]
        }
 
