@@ -1,8 +1,11 @@
 import { FC, useReducer, PropsWithChildren, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+
 import { IUser } from '../../interfaces';
 import { AuthContext, authReducer } from './';
 import { tesloApi } from '../../api';
+
 import Cookie from 'js-cookie';
 import axios, { AxiosError } from 'axios';
 
@@ -22,9 +25,19 @@ export const AuthProvider:FC<PropsWithChildren<AuthState>>= ({ children }) => {
   const router = useRouter();
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
 
+  const { data, status } = useSession();
+
   useEffect(() => {
-    checkToken();
-  }, []);
+    if (status === 'authenticated') {
+      console.log({user:data.user});
+      // TODO: dispatch({ type: '[Auth]- Login', payload: data?.user as IUser });
+    }
+  }, [status, data]);
+  
+
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
   
 
 
