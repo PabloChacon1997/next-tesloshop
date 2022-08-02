@@ -1,3 +1,5 @@
+import { CartContext } from '../../context';
+import { useContext } from 'react';
 
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -11,10 +13,18 @@ import Link from '@mui/material/Link';
 import NextLink from 'next/link';
 import { CartList, OrdenSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
+import { countries } from '../../utils';
 
 
 
 const SummaryPage = () => {
+
+  const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+  if (!shippingAddress) return <></>;
+
+  const { firstName, lastName, address, address2, city, country, seed, phone } = shippingAddress;
+
   return (
     <ShopLayout title={'Resumen de Orden'} pageDescription={'Carrito de compras dresumen de la orden'}>
       <Typography variant='h1' component='h1'>Resumen de Orden</Typography>
@@ -25,22 +35,22 @@ const SummaryPage = () => {
         <Grid item xs={12} sm={5}>
           <Card className='summary-card'>
             <CardContent>
-              <Typography variant='h2'>Resumen (3 productos)</Typography>
+              <Typography variant='h2'>Resumen ({ numberOfItems } { numberOfItems === 1 ? 'Producto': 'Productos' })</Typography>
 
               <Divider sx={{ my: 1 }} />
 
               <Box display='flex' justifyContent='space-between'>
                 <Typography variant='subtitle1'>Direccion de entrega</Typography>
-                <NextLink href='/checkput/address' passHref>
+                <NextLink href='/checkout/address' passHref>
                   <Link underline='always'>Editar</Link>
                 </NextLink>
               </Box>
 
-              <Typography>Andrés Chacón</Typography>
-              <Typography>PANA NORTE- ESC CEDEÑO</Typography>
-              <Typography>Cuenca, EC 456</Typography>
-              <Typography>Ecuador</Typography>
-              <Typography>+593 985679670</Typography>
+              <Typography>{ firstName } { lastName }</Typography>
+              <Typography>{ address }{ address2 ? `, ${address2}`: '' }</Typography>
+              <Typography>{ city }, { seed }</Typography>
+              <Typography>{ countries.find(c => c.code === country)?.name}</Typography>
+              <Typography>{ phone }</Typography>
 
               <Divider sx={{ my: 1 }} />
 

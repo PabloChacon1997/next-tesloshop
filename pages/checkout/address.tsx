@@ -1,12 +1,12 @@
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { CartContext } from '../../context';
 // import { GetServerSideProps } from 'next';
 
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -29,33 +29,31 @@ type FormData = {
 
 const AddressPage = () => {
 
+  const { updateAddress } = useContext(CartContext);
+
   const router = useRouter();
 
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      address: '',
-      address2: '',
-      seed: '',
-      city: '',
-      country: countries[0].code,
-      phone: '',
+  const getAddressFromCookie = (): FormData => {
+    return {
+      firstName: Cookie.get('firstName') || '',
+      lastName: Cookie.get('lastName') || '',
+      address: Cookie.get('address') || '',
+      address2: Cookie.get('address2') || '',
+      seed: Cookie.get('seed') || '',
+      city: Cookie.get('city') || '',
+      country: Cookie.get('country') || '',
+      phone: Cookie.get('phone') || '',
     }
+  }
+  
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    defaultValues: getAddressFromCookie()
   });
 
-  const onSubmitAddress = (data: FormData) => {
-    console.log(data);
-    Cookie.set('firstName', data.firstName);
-    Cookie.set('lastName', data.lastName);
-    Cookie.set('address', data.address);
-    Cookie.set('address2', data.address2 || '');
-    Cookie.set('seed', data.seed);
-    Cookie.set('city', data.city);
-    Cookie.set('country', data.country);
-    Cookie.set('phone', data.phone);
 
+  const onSubmitAddress = (data: FormData) => {
+    updateAddress(data);
     router.push('/checkout/summary');
   }
 
@@ -161,7 +159,7 @@ const AddressPage = () => {
                 select
                 variant='filled'
                 label='Pais'
-                defaultValue={countries[0].code}
+                defaultValue={ Cookie.get('country') || countries[0].code}
                 { 
                   ...register('country', {
                     required: 'Este campo es requerido',
