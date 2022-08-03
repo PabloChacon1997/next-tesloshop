@@ -1,3 +1,4 @@
+import { GetServerSideProps } from 'next';
 import { useState, useContext } from 'react';
 import { AuthContext } from '../../context/auth';
 
@@ -18,6 +19,9 @@ import { tesloApi } from '../../api';
 
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/react';
+import { unstable_getServerSession } from 'next-auth';
+import Nextauth from '../api/auth/[...nextauth]';
 
 
 
@@ -35,18 +39,20 @@ const LoginPage = () => {
 
   const onLoginUser = async( {email, password}: FormData ) => {
     setShowError(false);
-    const isValidLogin = await loginUser(email, password);
+    // const isValidLogin = await loginUser(email, password);
 
-    if (!isValidLogin) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-      return;
-    }
+    // if (!isValidLogin) {
+    //   setShowError(true);
+    //   setTimeout(() => {
+    //     setShowError(false);
+    //   }, 3000);
+    //   return;
+    // }
 
-    const destination = router.query.page?.toString() || '';
-    router.replace(destination);
+    // const destination = router.query.page?.toString() || '';
+    // router.replace(destination);
+
+    await signIn('credentials', { email, password });
   }
 
   return (
@@ -115,6 +121,27 @@ const LoginPage = () => {
       </form>
     </AuthLayout>
   )
+}
+
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+
+  // const session = await unstable_getServerSession(req, res);
+
+  // const { page='/' } = query;
+
+  // if (session) {
+  //   return {
+  //     redirect: {
+  //       destination: page.toString(),
+  //       permanent: false,
+  //     }
+  //   }
+  // }
+
+  return {
+    props: {}
+  }
 }
 
 export default LoginPage

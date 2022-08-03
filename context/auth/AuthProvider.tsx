@@ -1,5 +1,5 @@
 import { FC, useReducer, PropsWithChildren, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import { IUser } from '../../interfaces';
@@ -30,7 +30,7 @@ export const AuthProvider:FC<PropsWithChildren<AuthState>>= ({ children }) => {
   useEffect(() => {
     if (status === 'authenticated') {
       console.log({user:data.user});
-      // TODO: dispatch({ type: '[Auth]- Login', payload: data?.user as IUser });
+      dispatch({ type: '[Auth]- Login', payload: data?.user as IUser });
     }
   }, [status, data]);
   
@@ -78,9 +78,20 @@ export const AuthProvider:FC<PropsWithChildren<AuthState>>= ({ children }) => {
   }
 
   const logout = () => {
-    Cookie.remove('token');
+    // Cookie.remove('token');
     Cookie.remove('cart');
-    router.reload();
+    Cookie.remove('firstName');
+    Cookie.remove('lastName');
+    Cookie.remove('address');
+    Cookie.remove('address2');
+    Cookie.remove('seed');
+    Cookie.remove('city');
+    Cookie.remove('country');
+    Cookie.remove('phone');
+
+    signOut();
+
+    // router.reload();
   }
 
   const registerUser = async (name: string ,email: string, password: string): Promise<{hasError: boolean;message?: string}> => {
