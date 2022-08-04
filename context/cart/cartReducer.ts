@@ -35,7 +35,7 @@ import { CartState, ShippingAddress } from './';
         return {
           ...state,
           shippingAddress: action.payload
-       }
+        }
 
       case '[Cart]-Updated products in cart':
         return {

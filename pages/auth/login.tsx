@@ -1,5 +1,7 @@
 import { GetServerSideProps } from 'next';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { getProviders, getSession, signIn } from 'next-auth/react';
+
 import { AuthContext } from '../../context/auth';
 
 
@@ -10,18 +12,15 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 
 import { AuthLayout } from "../../components/layouts"
 import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 import { validations } from '../../utils';
-import { tesloApi } from '../../api';
 
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/react';
-import { unstable_getServerSession } from 'next-auth';
-import Nextauth from '../api/auth/[...nextauth]';
 
 
 
@@ -34,6 +33,19 @@ const LoginPage = () => {
   const router = useRouter();
   const { loginUser } = useContext(AuthContext);
   const [showError, setShowError] = useState(false);
+
+  const [providers, setProviders] = useState<any>({});
+
+  useEffect(() => {
+    getProviders().then( prov => {
+      // console.log(prov);
+      setProviders(prov);
+
+    })
+  }, [])
+  
+
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
 
@@ -116,6 +128,26 @@ const LoginPage = () => {
                 </Link>
               </NextLink>
             </Grid>
+            <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
+              <Divider sx={{ width: '100%', mb: 2 }}/>
+
+                {
+                  Object.values(providers).map((provider: any) => {
+                    if(provider.id==='credentials') return (<div key='credentials'></div>);
+                    return (
+                      <Button
+                        key={provider.id}
+                        variant='outlined'
+                        fullWidth
+                        color='primary'
+                        sx={{ mb: 1 }}
+                        onClick={() => signIn(provider.id)}
+                      >{provider.name}</Button>
+                    )
+                  })
+                }
+
+            </Grid>
           </Grid>
         </Box>
       </form>
@@ -124,20 +156,20 @@ const LoginPage = () => {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
 
-  // const session = await unstable_getServerSession(req, res);
+  const session = await getSession({req});
 
-  // const { page='/' } = query;
+  const { page='/' } = query;
 
-  // if (session) {
-  //   return {
-  //     redirect: {
-  //       destination: page.toString(),
-  //       permanent: false,
-  //     }
-  //   }
-  // }
+  if (session) {
+    return {
+      redirect: {
+        destination: page.toString(),
+        permanent: false,
+      }
+    }
+  }
 
   return {
     props: {}

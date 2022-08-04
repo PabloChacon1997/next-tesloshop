@@ -40,6 +40,19 @@ export default NextAuth({
     })
   ],
 
+  // Custom Pages
+  pages: {
+    signIn: '/auth/login',
+    newUser: '/auth/register'
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET_SEED, //deprecated
+  },
+  session: {
+    maxAge: 2592000, // 30 days
+    strategy: 'jwt',
+    updateAge: 86400, // Every day
+  },
   // Callbacks
   callbacks: {
     async jwt({token, account, user}) {

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CartContext } from '../../context';
 // import { GetServerSideProps } from 'next';
@@ -47,9 +47,23 @@ const AddressPage = () => {
     }
   }
   
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    defaultValues: getAddressFromCookie()
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+    defaultValues : {
+      firstName: '',
+      lastName: '',
+      address: '',
+      address2: '',
+      seed: '',
+      city: '',
+      country: countries[0].code,
+      phone: '',
+    }
   });
+
+  useEffect(() => {
+    reset(getAddressFromCookie());
+  }, [reset]);
+  
 
 
   const onSubmitAddress = (data: FormData) => {
@@ -156,25 +170,27 @@ const AddressPage = () => {
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField
-                select
+                // select
                 variant='filled'
                 label='Pais'
-                defaultValue={ Cookie.get('country') || countries[0].code}
+                fullWidth
+                // defaultValue={ Cookie.get('country') || countries[0].code}
                 { 
                   ...register('country', {
                     required: 'Este campo es requerido',
                   })
                 }
-                error={!!errors.seed}
+                error={!!errors.country}
+                helperText={errors.country?.message}
               >
                 {
-                  countries.map( country =>(
+                  // countries.map( country =>(
 
-                    <MenuItem 
-                      key={country.code}
-                      value={country.code}
-                    >{country.name}</MenuItem>
-                  ))
+                  //   <MenuItem 
+                  //     key={country.code}
+                  //     value={country.code}
+                  //   >{country.name}</MenuItem>
+                  // ))
                 }
               </TextField>
             </FormControl>
