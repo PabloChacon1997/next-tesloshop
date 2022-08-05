@@ -3,7 +3,9 @@ import { CartContext, cartReducer } from './';
 
 import Cookie from 'js-cookie';
 
-import { ICartProduct } from '../../interfaces';
+import { ICartProduct, ShippingAddress } from '../../interfaces';
+import { tesloApi } from '../../api';
+import { IOrder } from '../../interfaces/order';
 
 export interface CartState {
   isLoaded: boolean;
@@ -16,16 +18,7 @@ export interface CartState {
   shippingAddress?: ShippingAddress;
 }
 
-export interface ShippingAddress {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string;
-  seed: string;
-  city: string;
-  country: string;
-  phone: string;
-}
+
 
 
 const CART_INITIAL_STATE: CartState = {
@@ -136,6 +129,33 @@ export const CartProvider:FC<PropsWithChildren<CartState>>= ({ children }) => {
     dispatch({ type: '[Cart]-UpdatedAddress from cookie', payload: address });
   }
 
+  const createOrder = async () => {
+
+    if (!state.shippingAddress) {
+      throw new Error('No hay dirección de entrega');
+    }
+
+    const body: IOrder = {
+      orderItems: state.cart.map( p => ({
+        ...p,
+        size: p.size!
+      }) ),
+      shippingAddress: state.shippingAddress,
+      numberOfItems: state.numberOfItems,
+      subTotal: state.subTotal,
+      tax: state.tax,
+      total: state.total,
+      isPaid: false,
+    }
+
+    try {
+      const { data } = await tesloApi.post('/orders', body);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <CartContext.Provider value={{
       ...state,
@@ -145,6 +165,9 @@ export const CartProvider:FC<PropsWithChildren<CartState>>= ({ children }) => {
       updateCartQuantity,
       removeCartProduct,
       updateAddress,
+
+      // Orders
+      createOrder,
     }}>
       { children }
     </CartContext.Provider>

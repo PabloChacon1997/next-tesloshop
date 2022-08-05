@@ -23,13 +23,17 @@ const SummaryPage = () => {
 
   const router = useRouter();
 
-  const { shippingAddress, numberOfItems } = useContext(CartContext);
+  const { shippingAddress, numberOfItems, createOrder } = useContext(CartContext);
 
   useEffect(() => {
     if (!Cookie.get('firstName')) {
       router.push('/checkout/address');
     }
   }, [router]);
+
+  const onCreateOrder = () => {
+    createOrder();
+  }
   
 
   if (!shippingAddress) return <></>;
@@ -75,7 +79,7 @@ const SummaryPage = () => {
 
               <OrdenSummary />
               <Box sx={{mt: 3}}>
-                <Button color='secondary' className='circular-btn' fullWidth>
+                <Button onClick={onCreateOrder} color='secondary' className='circular-btn' fullWidth>
                   Confirmar Orden
                 </Button>
               </Box>
