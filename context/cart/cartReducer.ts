@@ -1,5 +1,5 @@
-import { ICartProduct } from '../../interfaces';
-import { CartState, ShippingAddress } from './';
+import { ICartProduct, ShippingAddress } from '../../interfaces';
+import { CartState } from './';
 
 
  type CartActionType =
@@ -19,6 +19,7 @@ import { CartState, ShippingAddress } from './';
         total: number;
       }
     }
+    | { type: '[Cart] Order complete' }
 
  export const cartReducer = ( state: CartState, action: CartActionType ): CartState => {
 
@@ -63,6 +64,15 @@ import { CartState, ShippingAddress } from './';
         return {
           ...state,
           ...action.payload
+        }
+      case '[Cart] Order complete':
+        return {
+          ...state,
+          cart: [],
+          numberOfItems: 0,
+          subTotal: 0,
+          tax: 0,
+          total: 0,
         }
       default:
         return state;
