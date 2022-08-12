@@ -11,7 +11,7 @@ import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 
-import NextLink from 'next/link';
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 import { CartList, OrdenSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
@@ -94,7 +94,25 @@ const OrderPage:NextPage<Props> = ({ order }) => {
                     )
                     :
                     (
-                      <h1>Pagar</h1>
+                      <PayPalButtons
+                        createOrder={(data, actions) => {
+                          return actions.order.create({
+                            purchase_units: [
+                              {
+                                amount: {
+                                  value: `${order.total}`,
+                                },
+                              },
+                            ],
+                          });
+                        }}
+                        onApprove={(data, actions) => {
+                          return actions.order!.capture().then((details) => {
+                            console.log({details});
+                            const name = details.payer.name!.given_name;
+                          });
+                        }}
+                      />
                     )
                 }
                 
