@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 
 import Divider from '@mui/material/Divider';
@@ -19,7 +20,8 @@ import ConfirmationNumberOutlined from "@mui/icons-material/ConfirmationNumberOu
 import EscalatorWarningOutlined from "@mui/icons-material/EscalatorWarningOutlined";
 import FemaleOutlined from "@mui/icons-material/FemaleOutlined";
 import LoginOutlined from "@mui/icons-material/LoginOutlined";
-import { useRouter } from 'next/router';
+import DashboardOutlined  from '@mui/icons-material/DashboardOutlined'
+
 
 import MaleOutlined from "@mui/icons-material/MaleOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
@@ -156,6 +158,15 @@ export const SideMenu = () => {
                             <Divider />
                             <ListSubheader>Admin Panel</ListSubheader>
 
+                            <ListItem 
+                                button
+                                onClick={() => navigateTo('/admin')}
+                            >
+                                <ListItemIcon>
+                                    <DashboardOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Dashboard'} />
+                            </ListItem>
                             <ListItem button>
                                 <ListItemIcon>
                                     <CategoryOutlined/>
