@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next'
 import { AdminLayout } from '../../../components/layouts'
 import { IProduct } from '../../../interfaces';
@@ -28,8 +29,9 @@ import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 
 import { dbProducts } from '../../../database';
-import { capitalize } from '@mui/material';
+import { capitalize, Input } from '@mui/material';
 import { tesloApi } from '../../../api';
+import { Product } from '../../../models';
 
 
 
@@ -57,6 +59,8 @@ interface Props {
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
+    const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [newTagValue, setNewTagValue] = useState('');
     const [isSaving, setIsSaving] = useState(false);
 
@@ -105,6 +109,24 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
         setValue('tags', updatedTags, { shouldValidate: true });
     }
 
+    const onFilesSelected = async({target}: ChangeEvent<HTMLInputElement>) => {
+        if(!target.files || target.files.length === 0) {
+            return;
+        }
+        
+        try {
+            for(const file of target.files) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const { data } = await tesloApi.post<{message: string}>('/admin/upload', formData);
+                setValue('images', [...getValues('images'), data.message],{ shouldValidate: true });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const onSubmit = async (form: FormData) => {
         if (form.images.length < 2) return alert("Minimo 2 imagenes");
         setIsSaving(false);
@@ -112,13 +134,14 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
         try {
             const {data} = await tesloApi({
                 url: '/admin/products',
-                method: 'PUT', //TODO: sitenemos un _id actualiza sino crea
+                method: form._id ? 'PUT': 'POST', // si tenemos un _id actualiza sino crea
                 data: form
             });
             console.log({data});
 
             if(!form._id) {
-                // TODO: recargar el navegador
+                // recargar el navegador
+                router.replace(`/admin/products/${form.slug}`);
             } else {
                 setIsSaving(false);
             }
@@ -126,6 +149,11 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
             console.log(error);
             setIsSaving(false);
         }
+    }
+
+
+    const onDeleteImage = (image: string) => {
+        setValue('images', getValues('images').filter(img => img !== image), {shouldValidate: true});
     }
 
     // TODO: Ordenar las tallas - v372
@@ -332,29 +360,42 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                                 fullWidth
                                 startIcon={ <UploadOutlined /> }
                                 sx={{ mb: 3 }}
+                                onClick={ () => fileInputRef.current?.click() }
                             >
                                 Cargar imagen
                             </Button>
+                            <input
+                                ref={fileInputRef}
+                                type='file'
+                                multiple
+                                accept='image/png, image/jpg, image/jpeg, image/gif'
+                                style={{ display: 'none' }}
+                                onChange={onFilesSelected}
+                            />
 
                             <Chip 
                                 label="Es necesario al 2 imagenes"
                                 color='error'
                                 variant='outlined'
+                                sx={{ display: getValues('images').length >= 2 ? 'none': 'flex' }}
                             />
 
                             <Grid container spacing={2}>
                                 {
-                                    product.images.map( img => (
+                                    getValues('images').map( img => (
                                         <Grid item xs={4} sm={3} key={img}>
                                             <Card>
                                                 <CardMedia 
                                                     component='img'
                                                     className='fadeIn'
-                                                    image={ `/products/${ img }` }
+                                                    image={ img }
                                                     alt={ img }
                                                 />
                                                 <CardActions>
-                                                    <Button fullWidth color="error">
+                                                    <Button 
+                                                        fullWidth 
+                                                        color="error"
+                                                        onClick={() => onDeleteImage(img)}>
                                                         Borrar
                                                     </Button>
                                                 </CardActions>
@@ -381,8 +422,19 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     
     const { slug = ''} = query;
+
+    let product: IProduct | null;
+
+    if(slug === 'new') {
+        // Crear producto
+        const tempProduct = JSON.parse(JSON.stringify( new Product() ));
+        delete tempProduct._id;
+        tempProduct.images = ['img1.jpg', 'img2.jpg'];
+        product = tempProduct;
+    } else {
+        product = await dbProducts.getProductsBySlug(slug.toString());
+    }
     
-    const product = await dbProducts.getProductsBySlug(slug.toString());
 
     if ( !product ) {
         return {
